@@ -6,16 +6,17 @@
 /*   By: yujung <yujung@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 17:01:40 by yujung            #+#    #+#             */
-/*   Updated: 2021/04/16 17:20:25 by yujung           ###   ########.fr       */
+/*   Updated: 2021/04/29 16:34:57 by yujung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int			print_str(char *str, flag *ps)
+int			print_str(char *str, t_flag *ps)
 {
 	char	*buf;
 	int		buf_len;
+	int		len;
 	int		i;
 
 	if (str == NULL)
@@ -32,21 +33,24 @@ int			print_str(char *str, flag *ps)
 		i++;
 	}
 	buf[i] = '\0';
-	ft_makebuf(&buf, ps);
+	len = ft_makebuf(&buf, ps);
 	ft_putstr(buf);
 	free(buf);
-	return (ft_strlen(buf));
+	return (len);
 }
 
-int			print_char(char c, char type, flag *ps)
+int			print_char(char c, char type, t_flag *ps)
 {
 	char	*buf;
+	int		len;
 
 	buf = malloc(sizeof(char) * 2);
 	buf[0] = c;
 	buf[1] = '\0';
-	ft_makebuf(&buf, ps);
+	if (type == '%')
+		;
+	len = ft_makebuf(&buf, ps);
 	ft_putstr(buf);
 	free(buf);
-	return (ft_strlen(buf));
+	return (len);
 }

@@ -6,11 +6,52 @@
 /*   By: yujung <yujung@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 17:12:55 by yujung            #+#    #+#             */
-/*   Updated: 2021/04/16 17:20:23 by yujung           ###   ########.fr       */
+/*   Updated: 2021/04/29 18:02:47 by yujung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
+int			ft_numlen(char type, long long num)
+{
+	int		i;
+
+	if (type == 'p' || type == 'x' || type == 'X')
+	{
+		i = 0;
+		while (num > 0)
+		{
+			num /= 16;
+			i++;
+		}
+		return (i);
+	}
+	else
+	{
+		i = 1;
+		while (num /= 10)
+			i++;
+		return (i);
+	}
+}
+
+int			put_sign(int len, int buf_len, char **buf, t_flag *ps)
+{
+	int		ret;
+
+	ret = 0;
+	if (ps->sign == -1 && ps->zero == 1)
+	{
+		if (buf_len >= ps->width)
+		{
+			*buf = ft_strjoin("-", *buf);
+			ret = 1;
+		}
+		else if (buf_len < ps->width)
+			*buf[0] = '-';
+	}
+	return (ret);
+}
 
 int			ft_putbase(long long num, char type, char **buf, int i)
 {
@@ -36,86 +77,55 @@ int			ft_putbase(long long num, char type, char **buf, int i)
 	return (i);
 }
 
-int			ft_numlen(char type, long long num)
+long long	check_sign(char type, long long num, t_flag *ps)
 {
-	int		i;
-
-	if (type == 'p' || type == 'x' || type == 'X')
-	{
-		i = 0;
-		while (num > 0)
-		{
-			num /= 16;
-			i++;
-		}
-		return (i);
-	}
-	else
-	{
-		i = 1;
-		while (num /= 10)
-			i++;
-		return (i);
-	}
-}
-
-int			set_buf(char type, long long num, char **buf, int buf_len)
-{
-	int		len;
-	int		i;
-
-	i = 0;
-	len = ft_numlen(type, num);
-	buf_len = len;
-	if (ps->dec > len)
-		buf_len = ps->dec;
-	if (!(buf = malloc(sizeof(char) * buf_len + 1)))
-		return (0);
-	while (ps->dec != -1 && i < ps->dec - len)
-		buf[i++] = '0';
-	ft_putbase(num, type, &(*buf), i);
-	buf[buf_len] = '\0';
-	if (type == 'p')
-		buf = ft_strjoin("0x", buf);
-	return (buf_len);
-}
-
-void		put_sign(char type, int buf_len, char **buf, flag *ps)
-{
-	if ((type == 'd' || type == 'i'))
-	{
-		if (buf_len < ps->width && ps->zero == 1)
-		{
-			if (ps->sign == -1)
-				buf[0] = '-';
-			else if (ps->sign == 1)
-				buf[0] = ' ';
-		}
-		else
-		{
-			if (ps->sign == -1)
-				buf = ft_strjoin(" ", buf);
-			else if (ps->sign == 1)
-				buf = ft_strjoin(" ", buf);
-		}
-	}
-}
-
-int			print_num(long long num, char type, flag *ps)
-{
-	char	*buf;
-	int		buf_len;
-
 	if ((type == 'd' || type == 'i') && (num < 0))
 	{
 		num *= -1;
-		if (ps->sign == 1)
-			ps->sign = -1;
+		ps->sign = -1;
 	}
-	buf_len = set_buf(type, num, &buf, buf_len);
-	ft_makebuf(&buf, ps);
-	put_sign(type, buf_len, &buf, ps);
+	return (num);
+}
+
+int			print_num(long long num, char type, t_flag *ps)
+{
+	char	*buf;
+	int		len;
+	int		buf_len;
+	int		i;
+
+	num = check_sign(type, num, ps);
+	buf_len = ft_numlen(type, num);
+	if (ps->dec > buf_len)
+		buf_len = ps->dec;
+	if (!(buf = malloc(sizeof(char) * buf_len + 1)))
+		return (0);
+	buf[buf_len] = '\0';
+	i = 0;
+	while (ft_numlen(type, num) + i < buf_len)
+		buf[i++] = '0';
+	if (num == 0 && ps->dec == 0)
+		buf[i] = 0;
+	else
+		ft_putbase(num, type, &buf, i);
+	if ((type == 'i' || type == 'd') && ps->zero == 0 && ps->sign == -1)
+	{
+		buf = ft_strjoin("-", buf);
+		len = 1;
+	}
+	if (type == 'p')
+		buf = ft_strjoin("0x", buf);
+	len += ft_makebuf(&buf, ps);
+	len += put_sign(ft_numlen(type, num), buf_len, &buf, ps);
 	ft_putstr(buf);
 	free(buf);
-	return (ft_strlen(buf));
+	return (len);
+}
+
+int main()
+{
+    ft_printf("[1] %-4i||\n",-8);
+	ft_printf("[2] %*i||\n",-4,-8);
+	printf("[1] %-4i||\n",-8);
+	printf("[2] %*i||\n",-4,-8);
 }

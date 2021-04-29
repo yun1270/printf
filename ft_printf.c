@@ -6,11 +6,20 @@
 /*   By: yujung <yujung@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 16:57:13 by yujung            #+#    #+#             */
-/*   Updated: 2021/04/16 17:19:14 by yujung           ###   ########.fr       */
+/*   Updated: 2021/04/29 17:42:22 by yujung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
+void		set_flag(t_flag *ps)
+{
+	ps->align = 0;
+	ps->sign = 0;
+	ps->zero = 0;
+	ps->width = 0;
+	ps->dec = -1;
+}
 
 int			check_type(const char *s, int i)
 {
@@ -21,7 +30,7 @@ int			check_type(const char *s, int i)
 	return (0);
 }
 
-void		check_flag(char ch, va_list ap, flag *ps)
+void		check_flag(char ch, va_list ap, t_flag *ps)
 {
 	if (ch == '0' && ps->width == 0 && ps->dec == -1)
 		ps->zero = 1;
@@ -41,14 +50,21 @@ void		check_flag(char ch, va_list ap, flag *ps)
 		else if (ch == '*')
 		{
 			if (ps->dec == -1)
+			{
 				ps->width = va_arg(ap, int);
+				if (ps->width < 0)
+				{
+					ps->align = 1;
+					ps->width *= -1;
+				}
+			}
 			else
 				ps->dec = va_arg(ap, int);
 		}
 	}
 }
 
-int			print_type(char type, va_list ap, flag *ps)
+int			print_type(char type, va_list ap, t_flag *ps)
 {
 	int		len;
 
@@ -71,14 +87,14 @@ int			print_type(char type, va_list ap, flag *ps)
 int			ft_printf(const char *s, ...)
 {
 	va_list	ap;
-	flag	*ps;
+	t_flag	*ps;
 	int		i;
 	int		len;
 
 	i = 0;
 	len = 0;
 	va_start(ap, s);
-	if (!(ps = malloc(sizeof(flag) * 1)))
+	if (!(ps = malloc(sizeof(t_flag) * 1)))
 		return (-1);
 	while (s[i])
 	{
@@ -90,12 +106,10 @@ int			ft_printf(const char *s, ...)
 			len += print_type(s[i++], ap, ps);
 		}
 		else
-		{
-			write(1, &s[i++], 1);
-			len++;
-		}
+			len += put_char(s[i++]);
 	}
 	free(ps);
 	va_end(ap);
-	return ();
+	return (len);
 }
+

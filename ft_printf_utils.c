@@ -6,19 +6,25 @@
 /*   By: yujung <yujung@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 16:55:42 by yujung            #+#    #+#             */
-/*   Updated: 2021/04/16 16:56:15 by yujung           ###   ########.fr       */
+/*   Updated: 2021/04/28 13:24:08 by yujung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void		set_flag(flag *ps)
+int			put_char(char ch)
 {
-	ps->align = 0;
-	ps->sign = 0;
-	ps->zero = 0;
-	ps->width = 0;
-	ps->dec = -1;
+	write(1, &ch, 1);
+	return (1);
+}
+
+void		ft_putstr(char *s)
+{
+	int		i;
+
+	i = 0;
+	while (s[i])
+		write(1, &s[i++], 1);
 }
 
 int			ft_strlen(const char *s)
@@ -49,16 +55,7 @@ char		*ft_strjoin(char const *s1, char const *s2)
 	return (str);
 }
 
-void		ft_putstr(char *s)
-{
-	int		i;
-
-	i = 0;
-	while (s[i])
-		write(1, &s[i++], 1);
-}
-
-void		ft_makebuf(char **buf, flag *ps)
+int			ft_makebuf(char **buf, t_flag *ps)
 {
 	char	*width;
 	char	ch;
@@ -78,5 +75,7 @@ void		ft_makebuf(char **buf, flag *ps)
 			*buf = ft_strjoin(width, *buf);
 		else
 			*buf = ft_strjoin(*buf, width);
+		return (ps->width);
 	}
+	return (ft_strlen(*buf));
 }
