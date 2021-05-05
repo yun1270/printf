@@ -6,36 +6,32 @@
 /*   By: yujung <yujung@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 17:12:55 by yujung            #+#    #+#             */
-/*   Updated: 2021/04/29 18:02:47 by yujung           ###   ########.fr       */
+/*   Updated: 2021/05/05 19:55:02 by yujung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int			ft_numlen(char type, long long num)
+int			ft_numlen(char type, long long num, t_flag *ps)
 {
 	int		i;
+	int		base;
 
+	base = 10;
 	if (type == 'p' || type == 'x' || type == 'X')
+		base = 16;
+	if (num == 0 && ps->dec != 0)
+		return (1);
+	i = 0;
+	while (num)
 	{
-		i = 0;
-		while (num > 0)
-		{
-			num /= 16;
-			i++;
-		}
-		return (i);
+		i++;
+		num /= base;
 	}
-	else
-	{
-		i = 1;
-		while (num /= 10)
-			i++;
-		return (i);
-	}
+	return (i);
 }
 
-int			put_sign(int len, int buf_len, char **buf, t_flag *ps)
+int			put_sign(int buf_len, char **buf, t_flag *ps)
 {
 	int		ret;
 
@@ -44,7 +40,7 @@ int			put_sign(int len, int buf_len, char **buf, t_flag *ps)
 	{
 		if (buf_len >= ps->width)
 		{
-			*buf = ft_strjoin("-", *buf);
+			*buf = ft_strjoin("-", *buf, 2);
 			ret = 1;
 		}
 		else if (buf_len < ps->width)
@@ -77,14 +73,21 @@ int			ft_putbase(long long num, char type, char **buf, int i)
 	return (i);
 }
 
-long long	check_sign(char type, long long num, t_flag *ps)
+void		put_buf(char **buf, t_flag *ps, long long num, char type)
 {
-	if ((type == 'd' || type == 'i') && (num < 0))
-	{
-		num *= -1;
-		ps->sign = -1;
-	}
-	return (num);
+	int		i;
+
+	i = 0;
+	while (ps->dec != -1 && i < ps->dec - ft_numlen(type, num, ps))
+		(*buf)[i++] = '0';
+	if (num == 0 && ps->dec == 0)
+		(*buf)[i] = 0;
+	else
+		ft_putbase(num, type, &(*buf), i);
+	if (type == 'p')
+		*buf = ft_strjoin("0x", *buf, 2);
+	if (ps->zero == 0 && ps->sign == -1)
+		*buf = ft_strjoin("-", *buf, 2);
 }
 
 int			print_num(long long num, char type, t_flag *ps)
@@ -92,40 +95,22 @@ int			print_num(long long num, char type, t_flag *ps)
 	char	*buf;
 	int		len;
 	int		buf_len;
-	int		i;
 
-	num = check_sign(type, num, ps);
-	buf_len = ft_numlen(type, num);
+	if ((type == 'd' || type == 'i') && (num < 0))
+	{
+		num *= -1;
+		ps->sign = -1;
+	}
+	buf_len = ft_numlen(type, num, ps);
 	if (ps->dec > buf_len)
 		buf_len = ps->dec;
 	if (!(buf = malloc(sizeof(char) * buf_len + 1)))
 		return (0);
 	buf[buf_len] = '\0';
-	i = 0;
-	while (ft_numlen(type, num) + i < buf_len)
-		buf[i++] = '0';
-	if (num == 0 && ps->dec == 0)
-		buf[i] = 0;
-	else
-		ft_putbase(num, type, &buf, i);
-	if ((type == 'i' || type == 'd') && ps->zero == 0 && ps->sign == -1)
-	{
-		buf = ft_strjoin("-", buf);
-		len = 1;
-	}
-	if (type == 'p')
-		buf = ft_strjoin("0x", buf);
-	len += ft_makebuf(&buf, ps);
-	len += put_sign(ft_numlen(type, num), buf_len, &buf, ps);
+	put_buf(&buf, ps, num, type);
+	len = ft_makebuf(&buf, ps);
+	len += put_sign(buf_len, &buf, ps);
 	ft_putstr(buf);
 	free(buf);
 	return (len);
-}
-
-int main()
-{
-    ft_printf("[1] %-4i||\n",-8);
-	ft_printf("[2] %*i||\n",-4,-8);
-	printf("[1] %-4i||\n",-8);
-	printf("[2] %*i||\n",-4,-8);
 }

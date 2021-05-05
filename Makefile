@@ -6,7 +6,7 @@
 #    By: yujung <yujung@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/14 17:29:23 by yujung            #+#    #+#              #
-#    Updated: 2021/04/24 17:25:14 by yujung           ###   ########.fr        #
+#    Updated: 2021/05/05 16:18:13 by yujung           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,8 @@ CFLAGS = -Wall -Wextra -Werror
 SRCS = ft_printf.c \
 	ft_printf_utils.c \
 	print_char_str.c \
-	print_num.c
+	print_num.c \
+	ft_printf_flag.c
 OBJS = $(SRCS:.c=.o)
 
 all : $(NAME)
