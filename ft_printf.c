@@ -6,7 +6,7 @@
 /*   By: yujung <yujung@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 16:57:13 by yujung            #+#    #+#             */
-/*   Updated: 2021/05/11 00:41:29 by yujung           ###   ########.fr       */
+/*   Updated: 2021/05/11 00:56:08 by yujung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int			check_and_print(const char *s, va_list ap, t_flag *ps)
 			set_flag(ps);
 			while (s[++i] && check_type(s, i) == 0)
 				check_flag(s[i], ap, ps);
-			if ((ps->align == 1 || ps->dec > -1))
+			if ((ps->align == 1 || ps->dec > -1) && s[i] != '%')
 				ps->zero = 0;
 			if ((n = print_type(s[i], ap, ps)) != -1)
 			{
