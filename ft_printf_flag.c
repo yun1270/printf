@@ -6,7 +6,7 @@
 /*   By: yujung <yujung@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/05 16:16:54 by yujung            #+#    #+#             */
-/*   Updated: 2021/05/05 19:58:05 by yujung           ###   ########.fr       */
+/*   Updated: 2021/05/10 19:08:41 by yujung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ void		check_flag_wigth_dec(char ch, va_list ap, t_flag *ps)
 			ps->width = va_arg(ap, int);
 			if (ps->width < 0)
 			{
-				if (ps->zero == 1)
-					ps->zero = 0;
 				ps->align = 1;
 				ps->width *= -1;
 			}

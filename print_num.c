@@ -6,7 +6,7 @@
 /*   By: yujung <yujung@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 17:12:55 by yujung            #+#    #+#             */
-/*   Updated: 2021/05/05 19:55:02 by yujung           ###   ########.fr       */
+/*   Updated: 2021/05/11 00:27:03 by yujung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,25 @@ int			put_sign(int buf_len, char **buf, t_flag *ps)
 	int		ret;
 
 	ret = 0;
-	if (ps->sign == -1 && ps->zero == 1)
+	if (ps->zero == 1)
 	{
 		if (buf_len >= ps->width)
 		{
-			*buf = ft_strjoin("-", *buf, 2);
-			ret = 1;
+			if (ps->sign == -1)
+			{
+				*buf = ft_strjoin("-", *buf, 2);
+				ret = 1;
+			}
+			else if (ps->sign == 1)
+				*buf = ft_strjoin(" ", *buf, 2);
 		}
 		else if (buf_len < ps->width)
-			*buf[0] = '-';
+		{
+			if (ps->sign == -1)
+				*buf[0] = '-';
+			else if (ps->sign == 1)
+				*buf[0] = ' ';
+		}
 	}
 	return (ret);
 }
@@ -84,10 +94,15 @@ void		put_buf(char **buf, t_flag *ps, long long num, char type)
 		(*buf)[i] = 0;
 	else
 		ft_putbase(num, type, &(*buf), i);
+	if ((type == 'd' || type == 'i') && ps->zero == 0)
+	{
+		if (ps->sign == -1)
+			*buf = ft_strjoin("-", *buf, 2);
+		else if (ps->sign == 1)
+			*buf = ft_strjoin(" ", *buf, 2);
+	}
 	if (type == 'p')
 		*buf = ft_strjoin("0x", *buf, 2);
-	if (ps->zero == 0 && ps->sign == -1)
-		*buf = ft_strjoin("-", *buf, 2);
 }
 
 int			print_num(long long num, char type, t_flag *ps)

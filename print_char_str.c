@@ -6,7 +6,7 @@
 /*   By: yujung <yujung@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 17:01:40 by yujung            #+#    #+#             */
-/*   Updated: 2021/05/02 17:56:22 by yujung           ###   ########.fr       */
+/*   Updated: 2021/05/10 19:13:09 by yujung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,16 @@ int			put_width_char(int i, t_flag *ps)
 	return (j + 1);
 }
 
-int			print_char(char c, t_flag *ps)
+int			print_char(char c, char type, t_flag *ps)
 {
 	int		len;
 
-	if (ps->align)
+	if (type == '%' && ps->align == 1)
+		ps->zero = 0;
+	if (ps->align == 1)
 		write(1, &c, 1);
 	len = put_width_char(1, ps);
-	if (!ps->align)
+	if (ps->align == 0)
 		write(1, &c, 1);
 	return (len);
 }

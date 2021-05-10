@@ -6,7 +6,7 @@
 /*   By: yujung <yujung@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 16:57:13 by yujung            #+#    #+#             */
-/*   Updated: 2021/05/05 16:19:50 by yujung           ###   ########.fr       */
+/*   Updated: 2021/05/11 00:41:29 by yujung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int			print_type(char type, va_list ap, t_flag *ps)
 	if (type == 's')
 		len += print_str(va_arg(ap, char *), ps);
 	else if (type == 'c')
-		len += print_char(va_arg(ap, int), ps);
+		len += print_char(va_arg(ap, int), type, ps);
 	else if (type == 'd' || type == 'i')
 		len += print_num(va_arg(ap, int), type, ps);
 	else if (type == 'x' || type == 'X' || type == 'u')
@@ -37,7 +37,9 @@ int			print_type(char type, va_list ap, t_flag *ps)
 	else if (type == 'p')
 		len += print_num(va_arg(ap, unsigned long long), type, ps);
 	else if (type == '%')
-		len += print_char('%', ps);
+		len += print_char('%', type, ps);
+	else
+		return (-1);
 	return (len);
 }
 
@@ -45,6 +47,7 @@ int			check_and_print(const char *s, va_list ap, t_flag *ps)
 {
 	int		i;
 	int		len;
+	int		n;
 
 	i = 0;
 	len = 0;
@@ -53,11 +56,15 @@ int			check_and_print(const char *s, va_list ap, t_flag *ps)
 		if (s[i] == '%')
 		{
 			set_flag(ps);
-			while (s[i] && check_type(s, ++i) == 0)
+			while (s[++i] && check_type(s, i) == 0)
 				check_flag(s[i], ap, ps);
-			if ((ps->align == 1 || ps->dec > -1) && s[i] != '%')
+			if ((ps->align == 1 || ps->dec > -1))
 				ps->zero = 0;
-			len += print_type(s[i++], ap, ps);
+			if ((n = print_type(s[i], ap, ps)) != -1)
+			{
+				len += n;
+				i++;
+			}
 		}
 		else
 			len += put_char(s[i++]);

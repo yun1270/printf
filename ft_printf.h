@@ -6,7 +6,7 @@
 /*   By: yujung <yujung@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 16:58:49 by yujung            #+#    #+#             */
-/*   Updated: 2021/05/05 19:54:59 by yujung           ###   ########.fr       */
+/*   Updated: 2021/05/10 19:04:42 by yujung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,6 @@ void			put_buf(char **buf, t_flag *ps, long long num, char type);
 */
 int				put_width_char(int i, t_flag *ps);
 int				print_str(char *str, t_flag *ps);
-int				print_char(char c, t_flag *ps);
+int				print_char(char c, char type, t_flag *ps);
 
 #endif
