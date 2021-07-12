@@ -1,18 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yujung <yujung@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/16 16:57:13 by yujung            #+#    #+#             */
-/*   Updated: 2021/05/11 00:56:08 by yujung           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "ft_printf.h"
 
-int			check_type(const char *s, int i)
+int	check_type(const char *s, int i)
 {
 	if (s[i] == 's' || s[i] == 'c' || s[i] == 'd'
 		|| s[i] == 'i' || s[i] == 'x' || s[i] == 'X'
@@ -21,7 +9,7 @@ int			check_type(const char *s, int i)
 	return (0);
 }
 
-int			print_type(char type, va_list ap, t_flag *ps)
+int	print_type(char type, va_list ap, t_flag *ps)
 {
 	int		len;
 
@@ -43,7 +31,7 @@ int			print_type(char type, va_list ap, t_flag *ps)
 	return (len);
 }
 
-int			check_and_print(const char *s, va_list ap, t_flag *ps)
+int	check_and_print(const char *s, va_list ap, t_flag *ps)
 {
 	int		i;
 	int		len;
@@ -60,11 +48,9 @@ int			check_and_print(const char *s, va_list ap, t_flag *ps)
 				check_flag(s[i], ap, ps);
 			if ((ps->align == 1 || ps->dec > -1) && s[i] != '%')
 				ps->zero = 0;
-			if ((n = print_type(s[i], ap, ps)) != -1)
-			{
+			n = print_type(s[i], ap, ps);
+			if (n != -1 && i++)
 				len += n;
-				i++;
-			}
 		}
 		else
 			len += put_char(s[i++]);
@@ -72,14 +58,15 @@ int			check_and_print(const char *s, va_list ap, t_flag *ps)
 	return (len);
 }
 
-int			ft_printf(const char *s, ...)
+int	ft_printf(const char *s, ...)
 {
 	va_list	ap;
 	t_flag	*ps;
 	int		len;
 
 	va_start(ap, s);
-	if (!(ps = malloc(sizeof(t_flag) * 1)))
+	ps = malloc(sizeof(t_flag) * 1);
+	if (!ps)
 		return (-1);
 	len = check_and_print(s, ap, ps);
 	free(ps);

@@ -1,18 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   print_char_str.c                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yujung <yujung@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/16 17:01:40 by yujung            #+#    #+#             */
-/*   Updated: 2021/05/10 19:13:09 by yujung           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "ft_printf.h"
 
-int			print_str(char *str, t_flag *ps)
+int	print_str(char *str, t_flag *ps)
 {
 	char	*buf;
 	int		buf_len;
@@ -24,7 +12,8 @@ int			print_str(char *str, t_flag *ps)
 	buf_len = ft_strlen(str);
 	if (ps->dec != -1 && ps->dec < buf_len && ps->dec >= 0)
 		buf_len = ps->dec;
-	if (!(buf = malloc(sizeof(char) * buf_len + 1)))
+	buf = malloc(sizeof(char) * buf_len + 1);
+	if (!buf)
 		return (0);
 	i = 0;
 	while (i < buf_len)
@@ -39,7 +28,7 @@ int			print_str(char *str, t_flag *ps)
 	return (len);
 }
 
-int			put_width_char(int i, t_flag *ps)
+int	put_width_char(int i, t_flag *ps)
 {
 	int	j;
 
@@ -55,7 +44,7 @@ int			put_width_char(int i, t_flag *ps)
 	return (j + 1);
 }
 
-int			print_char(char c, char type, t_flag *ps)
+int	print_char(char c, char type, t_flag *ps)
 {
 	int		len;
 

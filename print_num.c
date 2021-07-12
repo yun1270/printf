@@ -1,18 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   print_num.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yujung <yujung@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/16 17:12:55 by yujung            #+#    #+#             */
-/*   Updated: 2021/05/11 00:27:03 by yujung           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "ft_printf.h"
 
-int			ft_numlen(char type, long long num, t_flag *ps)
+int	ft_numlen(char type, long long num, t_flag *ps)
 {
 	int		i;
 	int		base;
@@ -31,7 +19,7 @@ int			ft_numlen(char type, long long num, t_flag *ps)
 	return (i);
 }
 
-int			put_sign(int buf_len, char **buf, t_flag *ps)
+int	put_sign(int buf_len, char **buf, t_flag *ps)
 {
 	int		ret;
 
@@ -59,7 +47,7 @@ int			put_sign(int buf_len, char **buf, t_flag *ps)
 	return (ret);
 }
 
-int			ft_putbase(long long num, char type, char **buf, int i)
+int	ft_putbase(long long num, char type, char **buf, int i)
 {
 	char	*base;
 	int		base_num;
@@ -83,7 +71,7 @@ int			ft_putbase(long long num, char type, char **buf, int i)
 	return (i);
 }
 
-void		put_buf(char **buf, t_flag *ps, long long num, char type)
+void	put_buf(char **buf, t_flag *ps, long long num, char type)
 {
 	int		i;
 
@@ -105,7 +93,7 @@ void		put_buf(char **buf, t_flag *ps, long long num, char type)
 		*buf = ft_strjoin("0x", *buf, 2);
 }
 
-int			print_num(long long num, char type, t_flag *ps)
+int	print_num(long long num, char type, t_flag *ps)
 {
 	char	*buf;
 	int		len;
@@ -119,7 +107,8 @@ int			print_num(long long num, char type, t_flag *ps)
 	buf_len = ft_numlen(type, num, ps);
 	if (ps->dec > buf_len)
 		buf_len = ps->dec;
-	if (!(buf = malloc(sizeof(char) * buf_len + 1)))
+	buf = malloc(sizeof(char) * buf_len + 1);
+	if (!buf)
 		return (0);
 	buf[buf_len] = '\0';
 	put_buf(&buf, ps, num, type);

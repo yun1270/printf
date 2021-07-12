@@ -1,24 +1,12 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_printf_utils.c                                  :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yujung <yujung@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/16 16:55:42 by yujung            #+#    #+#             */
-/*   Updated: 2021/05/05 19:57:43 by yujung           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "ft_printf.h"
 
-int			put_char(char ch)
+int	put_char(char ch)
 {
 	write(1, &ch, 1);
 	return (1);
 }
 
-void		ft_putstr(char *s)
+void	ft_putstr(char *s)
 {
 	int		i;
 
@@ -27,7 +15,7 @@ void		ft_putstr(char *s)
 		write(1, &s[i++], 1);
 }
 
-int			ft_strlen(const char *s)
+int	ft_strlen(const char *s)
 {
 	int		i;
 
@@ -37,7 +25,7 @@ int			ft_strlen(const char *s)
 	return (i);
 }
 
-char		*ft_strjoin(char const *s1, char const *s2, int n)
+char	*ft_strjoin(char const *s1, char const *s2, int n)
 {
 	char	*str;
 	char	*ret;
@@ -50,7 +38,8 @@ char		*ft_strjoin(char const *s1, char const *s2, int n)
 		ret = (char *)s1;
 	else if (n == 2)
 		ret = (char *)s2;
-	if (!(str = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1))))
+	str = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (!str)
 		return (NULL);
 	while (*s1)
 		str[i++] = *s1++;
@@ -61,7 +50,7 @@ char		*ft_strjoin(char const *s1, char const *s2, int n)
 	return (str);
 }
 
-int			ft_makebuf(char **buf, t_flag *ps)
+int	ft_makebuf(char **buf, t_flag *ps)
 {
 	char	*width;
 	char	ch;
